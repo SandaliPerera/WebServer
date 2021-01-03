@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 		int fdimg; //holding the files that we open
 		int on = 1; 
 		
-		fd_server = socket((AF)INET, SOCK_STREAM, 0)
+		fd_server = socket(AF_INET, SOCK_STREAM, 0);
 		
 		if (server < 0)
 		{
