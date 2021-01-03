@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 		struct socketaddr_in server_addr, client_addr;
 		//struct socketAddress_in serverAddress, clientAddress;
 
-		socklen_t sin_len = sizeof(clientAddress);
+		socklen_t sin_len = sizeof(client_addr);
 		int fd_server, fd_client;//return value from the socket function
 		char buf[2048];//to store return content sent by the server or browser 	
 		int fdimg; //holding the files that we open
@@ -50,6 +50,60 @@ int main(int argc, char *argv[])
 			perror("bind");
 			close(fd_server);
 			exit(1);
+		}
+		if(listen(fd_server,10)== -1){
+			perror("listen");
+			close(fd_server);
+			exit(1);
+		}
+		
+		while(1){
+			fd_client = accept(fd_server, (struct sockaddr *) &clientAddress, &sin_len);
+			
+			if(fd_client == -1){
+				perror("Cant connect to client.....\n");
+				continue;
+			}
+			
+			printf("Got client connection.......\n");
+			
+			if(!fork()){
+				
+				//childProcess
+				close(fd_server);
+				
+				//clear buffer
+				memset(buf, 0, 2048);
+				read(fd_client, buf, 2047);
+				
+				printnf("%s\n", buf); //content of the buffer - what the client/browser sent
+				
+				//add html embeded objects
+				if(!strncmp(buf, "Get /favicon.ico", 16)) //contain what the web browser is asking for)
+				{
+					fdimg = open("favicon.ico", O_RDONLY);
+					sendfile(fd_client, fdmig, NULL, 4000);
+					close(fdmig);
+				}
+				else if(!strncmp(buf, "GET /doctest.jpg",16))
+				{
+					fdmig = open("doctest.jpg", O_RDONLY);
+					sendfile(fd_client,fdmig, NULL, 6000);
+					close(fdmig);
+				}
+				else
+				//send the webpage
+				write(fd_client, webpage, sizeof(webpage) -1);
+				
+				close(fd_client)
+				printf("closing....\n");
+				exit(0);
+			
+			}
+			//parentProcess
+			close(fd_client);
+			
+			
 		}
 		
 		
