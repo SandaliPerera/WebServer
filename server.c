@@ -18,7 +18,7 @@ char webpage[] =
 "<!DOCTYPE html>\r\n"
 "<html><head><title>Server_18020569</title>\r\n"
 "<style>body {background-color: #000540}</style></head>\r\n"
-"<body><h1>Fuck this server</h1>\r\n"
+"<body><h1>18020569 Server</h1>\r\n"
 "<img src=\"photo2.jpg\"></body></html>\r\n"
 
 ;
